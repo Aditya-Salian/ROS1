@@ -1,5 +1,10 @@
 # ROS1
-
+//////////////////////////////
+Scheduling: Jaineel
+staff maintenence:Shlok
+Passenger offloading & refuelling: Vvyom
+Interupt handling : Aditya Salian
+/////////////////////////////
 plane requests to land()
 
 locks runway()
