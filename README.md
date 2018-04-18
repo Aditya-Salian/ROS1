@@ -1,7 +1,7 @@
 # ROS1
 
 //////////////////////////////
-Scheduling: Jaineel
+Landing Scheduling: Jaineel
 staff maintenence:Shlok
 Passenger offloading & refuelling: Vvyom
 Interupt handling : Aditya Salian
