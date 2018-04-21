@@ -57,28 +57,31 @@ void enterdetails()
 
 void staff_offload(plane A)
 {
-    //srand (time(0));
+    cout<<endl<<"---offloading of staff begins---";
     staff_available=staff_available + A.staff_present;
+    cout<<endl<<"---offloading of staff complete---";
     cout<<endl<<" Staff added to ground: "<<A.staff_present;
 
     A.staff_required=A.staff_present+ (rand()%2+1);
-
+    cout<<endl<<"---new staff required for takeoff---";
     cout<<endl<<" New staff required for takeoff: "<<A.staff_required;
     cout<<endl<<" Staff available on ground is: "<<staff_available;
 
     if(A.staff_required>staff_available)
     {
         cout<<"Complete staff no available right now, please wait!";
-        //continue;
     }
     else
-      {
+    {
+        cout<<endl<<"---loading new staff on plane---";
         A.staff_present=A.staff_required;
+        cout<<"---new staff loaded on plane---";
         cout<<endl<<"Staff added: "<<A.staff_present;
         staff_available=staff_available-A.staff_required;
+        cout<<endl<<"---staff on ground---";
         cout<<endl<<"Staff present on ground: "<<staff_available;
         cout<<endl;
-      }
+    }
 }
 
 
