@@ -3,7 +3,7 @@
 //////////////////////////////
 Landing Scheduling: Jaineel
 staff maintenence:Shlok
-Passenger offloading & refuelling: Vvyom
+Landing protocol: Vvyom
 Interupt handling : Aditya Salian
 /////////////////////////////
 
