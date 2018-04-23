@@ -2,15 +2,17 @@
 #include<time.h>
 #include<stdlib.h>
 #include<stdio.h>
-#include <bits/stdc++.h>
 using namespace std;
 
 void bubbleSort();
 void VIPPlanes();
 void midWayRefuel();
+void LockRunway();
+void UnlockRunway();
+void LandPlane(int);
 
 bool runwayfree=true;
-int counts=0;
+int countOfIndex=0;
 struct plane
 {
     string name;
@@ -27,7 +29,7 @@ int n;
 struct plane a[10];
 int landingList[10];
 int refuelingList[10];
-static int k,l;
+int semaphore=0;
 void enterdetails()
 {
     srand (time(0));
@@ -58,8 +60,8 @@ void enterdetails()
         cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
         a[i].staff_present=rand() % 10 + 3;
         cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
-        a[i].index=counts;
-        counts++;
+        a[i].index=countOfIndex;
+        countOfIndex++;
     }
 
 }
@@ -92,11 +94,11 @@ int main()
     bubbleSort();
     VIPPlanes();
     midWayRefuel();
-    for(int i=0;i<n;i++)
-    {
-        cout<<a[i].index<<endl;
-    }
-
+    LandPlane(2);
+    LockRunway();
+    LandPlane(0);
+    UnlockRunway();
+    LandPlane(1);
 }
 void bubbleSort()
     {
@@ -126,8 +128,39 @@ void midWayRefuel()
     {
         if(a[i].fuel<10*i)
         {
-            cout<<"Plane needs mid-air refueling: "<<a[i].name;
+            cout<<"Plane needs mid-air refueling: "<<a[i].name<<endl;
             a[i].fuel+=100;
         }
     }
+}
+
+void LockRunway()
+{
+    if(semaphore==0)
+    {
+        cout<<"Locking runway."<<endl;
+        cout<<"Runway Locked."<<endl;
+        semaphore=1;
+    }
+    else
+        cout<<"Runway already locked."<<endl;
+}
+
+void UnlockRunway()
+{
+    if(semaphore==1)
+    {
+        cout<<"Unlocking runway."<<endl;
+        cout<<"Runway unlocked successfully."<<endl;
+        semaphore=0;
+    }
+    else
+        cout<<"Runway already unlocked."<<endl;
+}
+
+void LandPlane(int index)
+{
+    LockRunway();
+    cout<<"Plane "<<a[index].name<<" has landed successfully!"<<endl;
+    UnlockRunway();
 }
