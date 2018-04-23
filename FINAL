@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<windows.h>
 #include<unistd.h>
-
+#include<sstream>
 using namespace std;
 
 struct plane
@@ -16,7 +16,7 @@ struct plane
     int staff_present;
     int staff_required; //Total requirement for it to be able to fly
     bool priority=false;
-}priority[10];
+}priority1[10];
 
 void bubbleSort();
 void VIPPlanes();
@@ -28,32 +28,66 @@ int findSmallestElement();
 void swaps(int,int);
 void LandingProcedure();
 void createtakeofflist(plane);
-void staff_offload(plane);
+void staff_offload();
 void printtakeoff();
+void entername(int);
+int enterpassengers(int i);
+void enterpriority(int);
+void calculatefuel(int);
+void calculatestaff(int);
+int enternumber();
 
+struct plane offloading_queue[10];
 int countOfIndex=0;
-int staff_available=3; //staff available on the ground ready to fly
+static int staff_available=3; //staff available on the ground ready to fly
 int n;
 struct plane a[10];
 int landingList[10];
 int refuelingList[10];
 int semaphore=0;
-int flag=0;//vv
+int flag=0;
 int takeoffindex=0;
+int c[10];
 struct plane takeoff[10];
 
-void enterdetails()
+int enternumber()
 {
-    //srand (time(0));
-    cout<<" Enter number of planes arriving at the Airport: ";
-    cin>>n;
-    for(int i=0;i<n;i++)
-    {
-        cout<<"\n Enter plane name for plane "<<i+1<<": ";
-        cin>>a[i].name;
-        cout<<" Enter number of passengers in plane "<<a[i].name<<": ";
-        cin>>a[i].passengers;
-        char priority_choice;
+    string m;
+    int n;
+    cout<<" Enter number of planes(less than 10) arriving at the Airport: ";
+    cin>>m;
+    stringstream geek(m);
+    geek>>n;
+    if(n>=10||n==0)
+     {
+        cout<<"\n Invalid input. Taking default value of 1";
+        return 1;
+     }
+     else return n;
+}
+void entername(int i)
+{
+    cout<<"\n Enter plane name for plane "<<i+1<<": ";
+    cin>>a[i].name;
+}
+int enterpassengers(int i)
+{
+    string m;
+    int n;
+    cout<<" Enter number of passengers in plane "<<a[i].name<<": ";
+    cin>>m;
+    stringstream geek(m);
+    geek>>n;
+    if(n==0)
+     {
+        cout<<"\n Invalid input. Taking default value of 10"<<endl;
+        return 10;
+     }
+     else return n;
+}
+void enterpriority(int i)
+{
+    char priority_choice;
         cout<<" Is it a VIP plane?(y/n): ";
         cin>>priority_choice;
         if(priority_choice=='y'||priority_choice=='Y')
@@ -68,10 +102,28 @@ void enterdetails()
         {
             cout<<" Invalid Input";
         }
-        a[i].fuel=(rand() % 100 + 50)%100;
-        cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
-        a[i].staff_present=rand() % 10 + 3;
-        cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
+}
+void calculatefuel(int i)
+{
+    a[i].fuel=(rand() % 100 + 50)%100;
+    cout<<" Fuel in Plane "<<a[i].name<<": "<<a[i].fuel;
+}
+void calculatestaff(int i)
+{
+    a[i].staff_present=rand() % 10 + 3;
+    cout<<endl<<" Staff present in plane "<<a[i].name<<" is: "<<a[i].staff_present<<"\n";
+}
+void enterdetails()
+{
+
+    n=enternumber();
+    for(int i=0;i<n;i++)
+    {
+        entername(i);
+        a[i].passengers=enterpassengers(i);
+        enterpriority(i);
+        calculatefuel(i);
+        calculatestaff(i);
         a[i].index=countOfIndex;
         countOfIndex++;
     }
@@ -79,7 +131,7 @@ void enterdetails()
 }
 
 int findSmallestElement()
-    {
+{
        int temp = 0;
        for(int i=0; i<n; i++) {
           if(a[temp].fuel>a[i].fuel) {
@@ -87,14 +139,14 @@ int findSmallestElement()
           }
        }
        return temp;
-    }
+}
 
 void swaps(int *xp, int *yp)
-    {
+{
         int temp = *xp;
         *xp = *yp;
         *yp = temp;
-    }
+}
 
 void LandingProcedure()
 {
@@ -102,19 +154,21 @@ void LandingProcedure()
     {
         LandPlane(a[i].index);
     }
-    cout<<"All aircrafts have landed successfully!"<<endl;
+    cout<<"\nAll aircrafts have landed successfully!"<<endl;
+    Sleep(3000);
 }
+
 void bubbleSort()
-    {
+{
        int i,j;
        for (i=0;i<n-1;i++)
            for (j=0;j<n-i-1;j++)
                if (a[j].fuel>a[j+1].fuel)
                   swaps(&a[j].index, &a[j+1].index);
-    }
+}
 
 void VIPPlanes()
-    {
+{
         int counter=0;
         for(int i=0;i<n;i++)
         {
@@ -124,7 +178,7 @@ void VIPPlanes()
                 counter++;
             }
         }
-    }
+}
 
 void midWayRefuel()
 {
@@ -143,7 +197,7 @@ void LockRunway()
     if(semaphore==0)
     {
         cout<<" Locking runway."<<endl;
-        Sleep(1000);
+        Sleep(2000);
         cout<<" Runway Locked.";
         semaphore=1;
     }
@@ -157,7 +211,7 @@ void UnlockRunway()
     {
         cout<<" Unlocking runway."<<endl;
         Sleep(1000);
-        cout<<" Runway unlocked successfully.";
+        cout<<" Runway unlocked successfully.\n";
         semaphore=0;
     }
     else
@@ -169,7 +223,7 @@ void LandPlane(int index)
     LockRunway();
     cout<<endl;
     Sleep(1300);
-    cout<<endl<<" Plane "<<a[index].name<<" has landed successfully!"<<endl;
+    cout<<endl<<" Plane "<<a[index].name<<" has landed successfully!\n";
     UnlockRunway();
     cout<<endl;
 }
@@ -180,51 +234,61 @@ void createtakeofflist(plane A)
     takeoffindex++;
 }
 
-void staff_offload(plane A)
+void staff_offload()
 {
-    cout<<endl<<"---offloading of staff begins---";
-    staff_available=staff_available + A.staff_present;
-    cout<<endl<<"---offloading of staff complete---";
-    Sleep(1500);
-    cout<<endl<<" Staff added to ground: "<<A.staff_present;
-    Sleep(1500);
-    cout<<endl;
-    A.staff_required=A.staff_present+ (rand()%2+1);
-    cout<<endl<<"---new staff required for takeoff---";
-    cout<<endl<<" New staff required for takeoff: "<<A.staff_required;
-    cout<<endl<<" Staff available on ground is: "<<staff_available;
+  cout<<"\n Starting staff & crew management!"<<endl;
+  for(int i=0;i<n;i++)
+  {
+    cout<<endl<<endl<<" Staff shift for plane "<<a[i].name<<"!\n";
 
-    if(A.staff_required>staff_available)
+    Sleep(1500);
+    cout<<endl<<endl<<" Offloading of staff begins.";
+    staff_available=staff_available + a[i].staff_present;
+    cout<<endl<<" Staff available on ground: "<<staff_available;
+    cout<<endl<<" Offloading of staff complete.\n";
+    Sleep(3000);
+
+    int n=(rand()%2)+1;
+    a[i].staff_required=a[i].staff_present + n;
+
+    cout<<endl<<" New staff required for takeoff: "<<a[i].staff_required;
+    cout<<endl<<" Staff available on ground is: "<<staff_available<<"\n";
+
+    Sleep(3000);
+
+    if(a[i].staff_required>staff_available)
     {
-        cout<<" Complete staff no available right now, please wait!";
+        cout<<endl<<" Complete staff no available right now, please wait!\n";
+        Sleep(3000);
     }
     else
     {
-        cout<<endl<<"---Enough staff present on ground---";
-        Sleep(1500);
-        cout<<endl<<"---loading new staff on plane---";
-        A.staff_present=A.staff_required;
-        cout<<endl<<" Staff added: "<<A.staff_present;
-        cout<<endl<<"---new staff loaded on plane---";
-        Sleep(1500);
-        staff_available=staff_available-A.staff_required;
-        cout<<endl<<"---staff on ground---";
-        cout<<endl<<" Staff present on ground: "<<staff_available;
-        createtakeofflist(A);
-        cout<<endl<<"---plane added to takeoff list---";
+        cout<<endl<<" Enough staff & crew present on ground. Good to go!";
+        Sleep(3000);
+        cout<<endl<<endl<<" Loading new staff & crew on plane.";
+        a[i].staff_present=a[i].staff_required;
+        cout<<endl<<" Staff added on board: "<<a[i].staff_present;
+        cout<<endl<<" Loading staff & crew on plane complete.";
+        Sleep(3000);
+        staff_available=staff_available-a[i].staff_required;
+        cout<<endl<<endl<<" Staff remaining present on ground: "<<staff_available;
+        createtakeofflist(a[i]);
+        cout<<endl<<endl<<" Plane added to takeoff list.";
         cout<<endl;
     }
+  }
 }
 
 void printtakeoff()
 {
     cout<<endl;
-    cout<<endl<<"---Take off list is a follows---"<<endl;
+    cout<<endl<<" Take off list is as follows: ";
     for(int i=0;i<takeoffindex;i++)
     {
         Sleep(1500);
         cout<<takeoff[i].name<<" <- ";
     }
+    cout<<"\n";
 }
 
 void arrangeByPassengers()
@@ -246,10 +310,12 @@ void arrangeByPassengers()
 
 void OffloadingAndFuel()
 {
-    plane offloading_queue[n]; int index=-1;
+    int index=-1;
     int count=0;
-    int flag[n]=0;
-    int c[10]=1;
+    int flag[n]={0};
+    for(int i=0;i<n;i++)
+        c[i]=0;
+        cout<<"\n Offloading passengers!"<<endl;
     do
     {
         for(int i=0;i<n;i++)
@@ -261,6 +327,7 @@ void OffloadingAndFuel()
                 {
                     flag[i]=1;
                     cout<<endl<<"Offloading: "<<a[i].name<<"   No.of bus trips: "<<c[i];
+                    Sleep(2000);
                     index++;
                     offloading_queue[index]=a[i];
                     count++;
@@ -277,39 +344,40 @@ void OffloadingAndFuel()
 
 void splitByPriority()
 {
-    int priority][n];
     int index=-1;
     for(int i=0;i<n;i++)
     {
-        if(ofloading_queue[i].vip==true)
+        if(offloading_queue[i].priority==true)
         {
             index++;
-            priority[index]=a[i];
+            priority1[index]=a[i];
         }
     }
     for(int i=0;i<n;i++)
     {
-        if(offloading_queue[i].vip=false)
+        if(offloading_queue[i].priority==false)
         {
             index++;
-            priority[index]=a[i];
+            priority1[index]=a[i];
         }
     }
+    cout<<"\n Starting refueling of planes!"<<endl;
 
 
     for(int i=0;i<n;i++)
     {
         //incrementing the fuel of every plane
-        while(priority[i].fuel!=150)
+        while(priority1[i].fuel!=150)
         {
             //incrementing till fuel doesnt reach the cap limit of 150
-            priority[i].fuel++;
+            priority1[i].fuel++;
         }
-        cout<<endl<<"Plane "<<priority[i].name<<" is done with refuelling\n";
+        cout<<endl<<"Plane "<<priority1[i].name<<" is done with refueling\n";
+        Sleep(2000);
     }
     for(int i=0;i<n;i++)
     {
-        a[i]=priority[i];
+        a[i]=priority1[i];
     }
 }
 
@@ -324,10 +392,7 @@ int main()
     arrangeByPassengers();
     OffloadingAndFuel();
     splitByPriority();
-    for(int i=0;i<n;i++)
-    {
-        staff_offload(a[i]);
-    }
+    staff_offload();
     printtakeoff();
     return 0;
 }
